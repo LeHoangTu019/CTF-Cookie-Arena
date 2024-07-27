@@ -52,4 +52,29 @@ Bây giờ ta sử dụng BurpSuite,repeat gói tin đầu tiên gửi đi, tìm
 ![image](https://github.com/user-attachments/assets/f7f6cf47-4c6f-48a5-861b-103a9fb2548a)
 
 ---
+<h1>SQL Truncation Attack</h1>
+https://battle.cookiearena.org/challenges/web/sql-truncation-attack
+
+Bài này cung cấp cho chúng ta source code chính login.php và register.php
+![image](https://github.com/user-attachments/assets/14c27ced-70b7-49f2-8e9d-8744e280f74f)
+![image](https://github.com/user-attachments/assets/162810e5-7d54-4cc7-99db-0abe692d5c1a)
+
+GOAL: Đăng nhập được vào tài khoản admin!!!
+
+Đọc code xử lý chính file login.php, ta thấy rằng câu lệnh SQL được đưa vào biến "stmt" và bằng việc sử dụng hàm bind_param để định dạng thuộc tính chuõi cho 2 biến "username" và "password". Việc sử dụng hàm bind_param này đã phần này nâng tính bảo mật của việc xử lý code vì tất cả những giá trị ta đưa vào biến "username" và biến "password" đều bị định dạng thành string => Không thể sử dụng những phương pháp chèn thêm UNION SELECT, kí tự "\'",... được (Hoặc có nếu mình chưa tìm ra :< )
+
+Nhưng chúng ta chỉ mới nhìn qua form login mà thôi, vậy còn form đăng ký thì sao? Trong form đăng ký, có đoạn code kiểm tra tính độc nhất của user (chỉ tồn tại duy nhất 1 tài khoản cùng tên) => Vậy nên ta không thể tạo ra thêm 1 tài khoản "admin" khác được. Và như ta thấy các đoạn code trước khi đưa dữ liệu vào xử lý câu lệnh SQL đều được anh lập trình viên sử dụng hàm bind_param định dạng thành chuỗi hết => Vậy thì cũng chẳng tồn tại lỗ hỏng SQL nào. 
+
+Để ý kĩ ta sẽ thấy 1 đoạn code nhỏ góc phải bên dưới là các câu lệnh SQL trong việc tạo tài khoản người dùng cho table users. Tìm hiểu 1 tí ta sẽ nhận ra rằng có tồn tại 1 lỗi mà anh lập trình viên quên ngăn chặn. <strong> Đó là SQL Truncation Attack (Tấn công SQL cắt cụt). </strong>
+
+Giải thích: Những ai có lập trình php web qua sẽ đều biết rằng khi tạo 1 cơ sở dữ liệu ta thường sẽ phải định dạng cho dữ liệu ấy thuộc kiểu dữ liệu nào và độ dài của dữ liệu.
+![image](https://github.com/user-attachments/assets/4f0e1ab8-7c75-4d42-8ccf-64bab6907384)
+Minh họa việc tạo cột trong 1 bảng trong phpadmin.
+
+Vậy ta thử đăng ký với giá trị username là "admin                 123" và password = "123" và đảm bảo rằng username có hơn 20 kí tự thì khi dữ liệu được đưa vào hệ thống xử lý phần sau giới hạn sẽ tự động bị cắt bỏ đi và như thế sẽ trở thành "admin                      " tổng cộng 20 kí tự gồm 5 kí tự admin và 15 kí tự khoảng trắng. Lúc này trong table users đã có 1 tài khoản mới username = "admin" và password = "123" tồn tại song song.
+![image](https://github.com/user-attachments/assets/2fe61375-a528-42b3-b1ee-3ad67016eb94)
+Sau khi đăng nhập vào tài khoản admin, ta sẽ được chuyển hướng tới flag.php
+---
+
+
 
