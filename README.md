@@ -56,6 +56,7 @@ Bây giờ ta sử dụng BurpSuite,repeat gói tin đầu tiên gửi đi, tìm
 https://battle.cookiearena.org/challenges/web/sql-truncation-attack
 
 Bài này cung cấp cho chúng ta source code chính login.php và register.php
+
 ![image](https://github.com/user-attachments/assets/14c27ced-70b7-49f2-8e9d-8744e280f74f)
 ![image](https://github.com/user-attachments/assets/162810e5-7d54-4cc7-99db-0abe692d5c1a)
 
@@ -68,10 +69,12 @@ Nhưng chúng ta chỉ mới nhìn qua form login mà thôi, vậy còn form đ�
 Để ý kĩ ta sẽ thấy 1 đoạn code nhỏ góc phải bên dưới là các câu lệnh SQL trong việc tạo tài khoản người dùng cho table users. Tìm hiểu 1 tí ta sẽ nhận ra rằng có tồn tại 1 lỗi mà anh lập trình viên quên ngăn chặn. <strong> Đó là SQL Truncation Attack (Tấn công SQL cắt cụt). </strong>
 
 Giải thích: Những ai có lập trình php web qua sẽ đều biết rằng khi tạo 1 cơ sở dữ liệu ta thường sẽ phải định dạng cho dữ liệu ấy thuộc kiểu dữ liệu nào và độ dài của dữ liệu.
+
 ![image](https://github.com/user-attachments/assets/4f0e1ab8-7c75-4d42-8ccf-64bab6907384)
 Minh họa việc tạo cột trong 1 bảng trong phpadmin.
 
 Vậy ta thử đăng ký với giá trị username là "admin                 123" và password = "123" và đảm bảo rằng username có hơn 20 kí tự thì khi dữ liệu được đưa vào hệ thống xử lý phần sau giới hạn sẽ tự động bị cắt bỏ đi và như thế sẽ trở thành "admin                      " tổng cộng 20 kí tự gồm 5 kí tự admin và 15 kí tự khoảng trắng. Lúc này trong table users đã có 1 tài khoản mới username = "admin" và password = "123" tồn tại song song.
+
 ![image](https://github.com/user-attachments/assets/2fe61375-a528-42b3-b1ee-3ad67016eb94)
 Sau khi đăng nhập vào tài khoản admin, ta sẽ được chuyển hướng tới flag.php
 ---
