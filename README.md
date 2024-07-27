@@ -78,6 +78,6 @@ Vậy ta thử đăng ký với giá trị username là "admin                 1
 ![image](https://github.com/user-attachments/assets/2fe61375-a528-42b3-b1ee-3ad67016eb94)
 Sau khi đăng nhập vào tài khoản admin, ta sẽ được chuyển hướng tới flag.php
 ---
-
+<h1>Baby HTTP Method</h1>
 
 
