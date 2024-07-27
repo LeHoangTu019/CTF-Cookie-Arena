@@ -1,4 +1,4 @@
-# CTF-Cookie-Arena
+![image](https://github.com/user-attachments/assets/a4f2135c-2945-4295-8626-53e31dacdd36)![image](https://github.com/user-attachments/assets/8499b860-5356-4bad-ab97-ac57bcaf1791)# CTF-Cookie-Arena
 
 <h1>Baby SQLite With Filter</h1>
 
@@ -77,7 +77,36 @@ Vậy ta thử đăng ký với giá trị username là "admin                 1
 
 ![image](https://github.com/user-attachments/assets/2fe61375-a528-42b3-b1ee-3ad67016eb94)
 Sau khi đăng nhập vào tài khoản admin, ta sẽ được chuyển hướng tới flag.php
+
 ---
 <h1>Baby HTTP Method</h1>
+
+Nhấp vào "click me for the flag" trong trang sẽ hiện về kết quả như thế này
+
+![image](https://github.com/user-attachments/assets/4386643d-c542-4f77-961c-25a7f3788764)
+
+Có vẻ trang web cũng không có gì cho chúng ta để tìm. Vậy chúng ta sử dụng tool recon ffuf để tìm các directories và thứ mà mình tìm được là "src"
+
+![image](https://github.com/user-attachments/assets/007be3a5-a259-497f-8081-454d1cde5a62)
+
+Vào trong /src sẽ hiện chúng ta nội dung như sau
+
+![image](https://github.com/user-attachments/assets/71738cee-a2e0-4d98-8f53-5973358a24a3)
+
+Đọc kỹ nội dung bên trong ta sẽ tìm được 1 dòng khá "khả nghi" "/super-secret-route-nobody-will-guess'". Quả thật không ai có thể đoán được và thì chúng ta truy cập thử vào sẽ xuất hiện web như thế này
+
+![image](https://github.com/user-attachments/assets/ea067db4-495a-4cd0-9195-8a34d12a668c)
+
+Chúng ta không thể truy cập được, liệu chúng ta có bỏ sót ở đâu không, cùng xem lại thử nào. 
+
+![image](https://github.com/user-attachments/assets/116cc83c-d92d-4cac-8b0c-1f575dd74833)
+
+Chúng ta đã bỏ quên method "PUT". Thứ chúng ta chạy chính là trên method "GET". Vậy thử lại với burpSuite thay đổi method nào.
+
+![image](https://github.com/user-attachments/assets/6a853757-987e-4ac5-b8ae-9056f9081ed2)
+
+Và chúng ta đã thành công giải được bài này !!! 
+
+---
 
 
