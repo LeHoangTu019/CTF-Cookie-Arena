@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/a4f2135c-2945-4295-8626-53e31dacdd36)![image](https://github.com/user-attachments/assets/8499b860-5356-4bad-ab97-ac57bcaf1791)# CTF-Cookie-Arena
+![image](https://github.com/user-attachments/assets/5eeb1ea4-2c79-48fb-a474-755faa5f92cd)![image](https://github.com/user-attachments/assets/a4f2135c-2945-4295-8626-53e31dacdd36)![image](https://github.com/user-attachments/assets/8499b860-5356-4bad-ab97-ac57bcaf1791)# CTF-Cookie-Arena
 
 <h1>Baby SQLite With Filter</h1>
 
@@ -144,5 +144,17 @@ Thử ý tưởng và ta sẽ lấy được đáp án:
 ![image](https://github.com/user-attachments/assets/d32f3284-64cb-4dfa-b3f8-4406845b5963)
 
 ở đây mình có thêm 1 dấu slash "/" vào thành 127.0.0.1:1337// vì nếu URL được truyền trong tham số truy vấn url bắt đầu bằng dấu gạch chéo đơn (/), hàm http.NewRequest sẽ coi nó là đường dẫn tương đối và nối nó vào đường dẫn cơ sở hiện tại, dẫn đến một đường dẫn không chính xác. Bằng cách sử dụng dấu gạch chéo kép (//), mã đảm bảo rằng đường dẫn được coi là đường dẫn tuyệt đối, và hàm http.NewRequest có thể tạo một yêu cầu HTTP mới chính xác.
+
+---
+
+<h1>Where do you come from</h1>
+
+GOAL: Bạn chỉ có thể lấy được flag nếu bạn truy cập trang web từ web của https://cookiearena.org/
+
+Đơn giản là ta thêm vào trường Referer với value là web "https://cookiearena.org/"
+
+![image](https://github.com/user-attachments/assets/47ffbc71-d26b-4604-93c7-71be6fcba89a)
+
+Và thế ta là đã lấy được flag
 
 ---
