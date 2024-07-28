@@ -109,4 +109,40 @@ Và chúng ta đã thành công giải được bài này !!!
 
 ---
 
+<h1>Baby Simple Go CURL</h1>
 
+GOAL: tìm đến /flag để lấy flag!!!
+
+Đây là trang web xử lý:
+
+![image](https://github.com/user-attachments/assets/574873e3-82b0-4b3b-8348-b6aedf16a917)
+
+Test thử chức năng "CURL" của trang web:
+
+![image](https://github.com/user-attachments/assets/0c3516ae-c359-41ec-863a-24734bc62e83)
+
+Đoạn code xử lý chính của bài này sẽ được mình upload lên với tên file là main.go. Tìm hiểu code, ta cần chú ý vào các dòng 18,55,95. Những dòng code này đều đề cập đến địa chỉ IP 127.0.0.1 (đây là địa chỉ IP từ máy host)
+
+=> Vậy ta có thể nhận định rằng đây là lỗi SSRF (Server-Side Request Furgery)
+
+Đối với dạng bài SSRF này, ta không thể truy cập trực tiếp vào dir /flag được vì hệ thống sẽ chỉ cho phép chính host (127.0.0.1) truy cập vào. Và đây là ảnh minh họa khi ta cố gắng truy cập từ địa chỉ IP không phải host.
+
+![image](https://github.com/user-attachments/assets/c23694c3-f286-4a19-8b0d-63a571e30a0c)
+
+Vậy phương pháp để giải dạng này dùng chính khả năng "gọi URL" của web (cụ thể ở đây là lệnh CURL) để gọi chính host chạy đến dir "/flag" và trả lại kết quả cho chúng ta. Hoàn thành bước 1: Nhận định lỗi và lên ý tưởng.
+
+![image](https://github.com/user-attachments/assets/f0ea9db2-dc4b-48f4-af53-a63327bd10d2)
+
+Đến bước tiếp theo, ta cần phải lên kế hoạch khai thác các lỗ hỏng, kiểm tra qua code ta nhận thấy rằng ta không thể đưa payload "http://127.0.0.1:1337/flag" vì kí tự "flag" "curl" "%" đã bị chặn. (Không thể sử dụng cả dạng mã hóa)
+
+![image](https://github.com/user-attachments/assets/68936b77-8b8d-41bc-b519-0b7b148b3387)
+
+Nhận định rằng ta không thể truy cập vào /flag bằng cách đó => Tìm những lỗ hỏng khác để hỗ trợ. Ta chú ý rằng chúng ta chỉ mới tìm lỗ hỏng ở trường URL nhưng còn Header_Key và Header_Value thì sao. Tìm hiểu 1 chút trên mạng để xem có cách nào để sử dụng Header có thể chuyển hướng gói tin chúng ta đến  dir /flag vượt qua bước kiểm tra. Ở đây mình tìm ra được các cụm từ Header: X-Forwarded-Host, X-Forwarded-Proto, X-Forwarded-Prefix,... Ở đây ta cần điều chỉnh URL để đến với dir /flag nên Header_key ta cần dùng là "X-Forwarded-Prefix"
+
+Thử ý tưởng và ta sẽ lấy được đáp án:
+
+![image](https://github.com/user-attachments/assets/d32f3284-64cb-4dfa-b3f8-4406845b5963)
+
+ở đây mình có thêm 1 dấu slash "/" vào thành 127.0.0.1:1337// vì nếu URL được truyền trong tham số truy vấn url bắt đầu bằng dấu gạch chéo đơn (/), hàm http.NewRequest sẽ coi nó là đường dẫn tương đối và nối nó vào đường dẫn cơ sở hiện tại, dẫn đến một đường dẫn không chính xác. Bằng cách sử dụng dấu gạch chéo kép (//), mã đảm bảo rằng đường dẫn được coi là đường dẫn tuyệt đối, và hàm http.NewRequest có thể tạo một yêu cầu HTTP mới chính xác.
+
+---
